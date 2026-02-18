@@ -1,0 +1,2211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Classbook</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f9fafb;
+  --surface: #ffffff;
+  --surface2: #f3f4f6;
+  --surface3: #eef0f5;
+  --border: #e5e7eb;
+  --border2: #d1d5db;
+  --text: #111827;
+  --text2: #6b7280;
+  --text3: #9ca3af;
+  --blue: #2563eb;
+  --blue-light: #eff6ff;
+  --blue-dark: #1d4ed8;
+  --blue-border: #bfdbfe;
+  --green: #059669;
+  --green-bg: #ecfdf5;
+  --green-border: #a7f3d0;
+  --amber: #d97706;
+  --amber-bg: #fffbeb;
+  --amber-border: #fde68a;
+  --red: #dc2626;
+  --red-bg: #fef2f2;
+  --red-border: #fecaca;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.05);
+  --shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.08), 0 12px 32px rgba(0,0,0,.06);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,.1), 0 24px 64px rgba(0,0,0,.08);
+  --font: 'Geist', -apple-system, sans-serif;
+  --nav-h: 60px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ═══════════════════════════════════
+   SCREENS
+═══════════════════════════════════ */
+.screen {
+  position: fixed; inset: 0;
+  display: flex; flex-direction: column;
+  opacity: 0; pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity .2s ease, transform .2s ease;
+  background: var(--bg);
+}
+.screen.active {
+  opacity: 1; pointer-events: all;
+  transform: translateY(0);
+  z-index: 1;
+}
+.screen.slide-from-right {
+  transform: translateX(32px);
+}
+.screen.active.slide-from-right {
+  transform: translateX(0);
+}
+
+/* ═══════════════════════════════════
+   AUTH SCREEN
+═══════════════════════════════════ */
+#s-auth {
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.auth-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 20px;
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+  backdrop-filter: blur(20px);
+}
+.auth-logo {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 32px; justify-content: center;
+}
+.auth-logo-icon {
+  width: 40px; height: 40px;
+  background: var(--blue);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 900;
+  color: white;
+  letter-spacing: -1px;
+}
+.auth-logo-text {
+  font-size: 22px; font-weight: 800;
+  color: white; letter-spacing: -0.5px;
+}
+.auth-title {
+  font-size: 22px; font-weight: 700;
+  color: white; text-align: center;
+  margin-bottom: 6px; letter-spacing: -0.3px;
+}
+.auth-sub {
+  font-size: 13px; color: rgba(255,255,255,.45);
+  text-align: center; margin-bottom: 28px;
+}
+.auth-tabs {
+  display: flex; gap: 4px;
+  background: rgba(0,0,0,.2);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+  margin-bottom: 24px;
+}
+.auth-tab {
+  flex: 1; padding: 7px;
+  font-family: var(--font);
+  font-size: 13px; font-weight: 600;
+  color: rgba(255,255,255,.45);
+  background: transparent; border: none;
+  border-radius: 6px; cursor: pointer;
+  transition: all .2s;
+}
+.auth-tab.active {
+  background: rgba(255,255,255,.12);
+  color: white;
+}
+.auth-form-group { margin-bottom: 14px; }
+.auth-label {
+  display: block;
+  font-size: 11px; font-weight: 600;
+  color: rgba(255,255,255,.4);
+  text-transform: uppercase; letter-spacing: .8px;
+  margin-bottom: 6px;
+}
+.auth-input {
+  width: 100%;
+  font-family: var(--font);
+  font-size: 14px;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: var(--radius-sm);
+  padding: 11px 14px;
+  color: white;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.auth-input::placeholder { color: rgba(255,255,255,.2); }
+.auth-input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(37,99,235,.3);
+}
+.auth-btn {
+  width: 100%;
+  font-family: var(--font);
+  font-size: 14px; font-weight: 700;
+  background: var(--blue);
+  color: white; border: none;
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  cursor: pointer; margin-top: 8px;
+  transition: all .2s;
+  letter-spacing: -.1px;
+}
+.auth-btn:hover { background: var(--blue-dark); box-shadow: 0 4px 12px rgba(37,99,235,.4); }
+.auth-divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 20px 0;
+}
+.auth-divider-line { flex: 1; height: 1px; background: rgba(255,255,255,.08); }
+.auth-divider-text { font-size: 11px; color: rgba(255,255,255,.2); }
+.auth-note {
+  font-size: 11px; color: rgba(255,255,255,.25);
+  text-align: center; margin-top: 16px;
+  line-height: 1.6;
+}
+.auth-note a { color: rgba(255,255,255,.5); text-decoration: none; }
+.auth-error {
+  background: rgba(220,38,38,.15);
+  border: 1px solid rgba(220,38,38,.3);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 12px; color: #fca5a5;
+  margin-bottom: 14px; display: none;
+}
+.auth-error.show { display: block; }
+/* Supabase connect panel */
+.supabase-panel {
+  margin-top: 20px;
+  background: rgba(0,0,0,.2);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+}
+.supabase-panel-title {
+  font-size: 11px; font-weight: 600;
+  color: rgba(255,255,255,.3);
+  text-transform: uppercase; letter-spacing: .8px;
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 6px;
+}
+.supabase-status {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 2px 8px; border-radius: 100px;
+  font-size: 10px; font-weight: 600;
+}
+.supabase-status.connected { background: rgba(5,150,105,.2); color: #6ee7b7; }
+.supabase-status.local { background: rgba(217,119,6,.15); color: #fde68a; }
+
+/* ═══════════════════════════════════
+   NAV / TOPBAR
+═══════════════════════════════════ */
+.topbar {
+  height: var(--nav-h);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 20px;
+  gap: 12px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+.topbar-logo {
+  display: flex; align-items: center; gap: 8px;
+  text-decoration: none;
+}
+.logo-mark {
+  width: 32px; height: 32px;
+  background: var(--blue);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 900;
+  color: white; letter-spacing: -1px;
+  flex-shrink: 0;
+}
+.topbar-title {
+  font-size: 15px; font-weight: 700;
+  color: var(--text); letter-spacing: -.3px;
+}
+.topbar-sep { color: var(--border2); font-size: 18px; user-select: none; }
+.topbar-crumb {
+  font-size: 14px; font-weight: 500;
+  color: var(--text2);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  max-width: 200px;
+}
+.topbar-crumb.active { color: var(--text); font-weight: 600; }
+.topbar-right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+.save-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border-radius: 100px;
+  font-size: 11px; font-weight: 600;
+  color: var(--green); background: var(--green-bg);
+  border: 1px solid var(--green-border);
+  opacity: 0; transition: opacity .4s;
+}
+.save-pill.show { opacity: 1; }
+.user-pill {
+  display: flex; align-items: center; gap: 8px;
+  padding: 4px 12px 4px 4px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 100px; cursor: pointer;
+  transition: background .15s;
+}
+.user-pill:hover { background: var(--border); }
+.user-avatar {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue), #818cf8);
+  color: white; font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.user-name { font-size: 12px; font-weight: 600; color: var(--text); }
+
+/* Back button */
+.back-btn {
+  display: flex; align-items: center; gap: 6px;
+  background: none; border: none; cursor: pointer;
+  color: var(--text2); font-size: 13px; font-weight: 500;
+  padding: 6px 10px; border-radius: var(--radius-sm);
+  transition: background .15s, color .15s;
+  font-family: var(--font);
+  flex-shrink: 0;
+}
+.back-btn:hover { background: var(--surface2); color: var(--text); }
+
+/* ═══════════════════════════════════
+   HOME SCREEN
+═══════════════════════════════════ */
+#s-home .body {
+  flex: 1; overflow-y: auto;
+  padding: 28px 24px;
+}
+.home-header {
+  display: flex; align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap; gap: 12px;
+}
+.home-greeting {
+  font-size: 22px; font-weight: 800;
+  letter-spacing: -.5px; color: var(--text);
+  margin-bottom: 3px;
+}
+.home-sub { font-size: 13px; color: var(--text3); }
+.classrooms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+.classroom-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  cursor: pointer;
+  transition: box-shadow .2s, border-color .2s, transform .15s;
+  position: relative; overflow: hidden;
+}
+.classroom-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--blue-border);
+  transform: translateY(-2px);
+}
+.cc-color-bar {
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--blue), #818cf8);
+  opacity: 0; transition: opacity .2s;
+}
+.classroom-card:hover .cc-color-bar { opacity: 1; }
+.cc-header {
+  display: flex; align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.cc-icon {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.cc-del {
+  width: 28px; height: 28px;
+  background: none; border: none;
+  border-radius: 6px; cursor: pointer;
+  color: var(--text3); font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: all .15s;
+}
+.classroom-card:hover .cc-del { opacity: 1; }
+.cc-del:hover { background: var(--red-bg); color: var(--red); }
+.cc-name {
+  font-size: 16px; font-weight: 700;
+  letter-spacing: -.3px; color: var(--text);
+  margin-bottom: 3px;
+}
+.cc-subject { font-size: 12px; color: var(--text3); margin-bottom: 16px; }
+.cc-stats { display: flex; gap: 16px; }
+.cc-stat-val { font-size: 20px; font-weight: 800; letter-spacing: -.5px; }
+.cc-stat-lbl { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: .5px; margin-top: 1px; }
+.new-class-card {
+  background: var(--surface);
+  border: 2px dashed var(--border2);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  cursor: pointer;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 10px;
+  color: var(--text3);
+  font-size: 13px; font-weight: 500;
+  transition: all .2s;
+  min-height: 170px;
+}
+.new-class-card:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+  background: var(--blue-light);
+}
+.new-class-plus {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--surface2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; transition: background .2s, color .2s;
+}
+.new-class-card:hover .new-class-plus { background: var(--blue); color: white; }
+
+/* ═══════════════════════════════════
+   CLASSROOM SCREEN
+═══════════════════════════════════ */
+#s-classroom {
+  z-index: 2;
+}
+.tabs-bar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex; gap: 0;
+  padding: 0 20px;
+  flex-shrink: 0;
+  overflow-x: auto; scrollbar-width: none;
+}
+.tabs-bar::-webkit-scrollbar { display: none; }
+.tab-btn {
+  padding: 14px 16px;
+  font-family: var(--font);
+  font-size: 13px; font-weight: 500;
+  color: var(--text3);
+  background: none; border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer; white-space: nowrap;
+  transition: color .15s;
+  display: flex; align-items: center; gap: 6px;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); font-weight: 600; }
+.tab-badge {
+  background: var(--surface2); color: var(--text2);
+  padding: 1px 6px; border-radius: 10px;
+  font-size: 10px; font-weight: 700;
+}
+.tab-btn.active .tab-badge { background: var(--blue-light); color: var(--blue); }
+
+.tab-panel { display: none; flex: 1; overflow: hidden; flex-direction: column; }
+.tab-panel.active { display: flex; }
+
+/* Panel header */
+.panel-hdr {
+  padding: 16px 20px;
+  display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  flex-shrink: 0;
+}
+.panel-hdr-title { font-size: 14px; font-weight: 700; }
+.panel-hdr-count {
+  background: var(--surface2); color: var(--text2);
+  padding: 2px 8px; border-radius: 20px;
+  font-size: 11px; font-weight: 600;
+}
+.panel-hdr-right { margin-left: auto; display: flex; gap: 8px; }
+
+/* Scrollable content */
+.panel-scroll { flex: 1; overflow-y: auto; padding: 16px 20px; }
+
+/* ═══════════════════════════════════
+   STUDENT ROWS
+═══════════════════════════════════ */
+.student-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: box-shadow .15s, border-color .15s;
+}
+.student-item:hover { border-color: var(--blue-border); box-shadow: var(--shadow); }
+.s-avatar {
+  width: 38px; height: 38px; border-radius: 9px;
+  background: linear-gradient(135deg, var(--blue) 0%, #818cf8 100%);
+  color: white; font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.s-info { flex: 1; min-width: 0; }
+.s-name { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.s-meta {
+  font-size: 11px; color: var(--text3);
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.s-meta-item { display: flex; align-items: center; gap: 3px; }
+.s-att-pills { display: flex; gap: 6px; flex-shrink: 0; }
+.pill {
+  padding: 3px 9px; border-radius: 100px;
+  font-size: 11px; font-weight: 700;
+  white-space: nowrap;
+}
+.pill-green { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+.pill-amber { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
+.pill-red { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+.pill-blue { background: var(--blue-light); color: var(--blue); border: 1px solid var(--blue-border); }
+.s-actions { display: flex; gap: 6px; opacity: 0; transition: opacity .15s; }
+.student-item:hover .s-actions { opacity: 1; }
+
+/* ═══════════════════════════════════
+   LESSONS
+═══════════════════════════════════ */
+.lessons-list { display: flex; flex-direction: column; gap: 8px; }
+.lesson-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  display: flex; align-items: center; gap: 16px;
+  cursor: pointer;
+  transition: box-shadow .2s, border-color .2s, transform .12s;
+  position: relative;
+}
+.lesson-item:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--blue-border);
+  transform: translateX(3px);
+}
+.lesson-number {
+  width: 36px; height: 36px;
+  background: var(--blue);
+  border-radius: 9px;
+  color: white; font-size: 13px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.lesson-info { flex: 1; min-width: 0; }
+.lesson-name {
+  font-size: 15px; font-weight: 700;
+  letter-spacing: -.2px; color: var(--text);
+  margin-bottom: 4px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.lesson-date-row {
+  font-size: 12px; color: var(--text3);
+  display: flex; align-items: center; gap: 8px;
+}
+.lesson-att-mini { display: flex; gap: 6px; flex-shrink: 0; }
+.att-dot {
+  width: 24px; height: 24px;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700;
+}
+.att-dot.p { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+.att-dot.l { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
+.att-dot.a { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+.lesson-arrow {
+  color: var(--text3); font-size: 16px;
+  transition: color .15s, transform .15s;
+}
+.lesson-item:hover .lesson-arrow { color: var(--blue); transform: translateX(4px); }
+.lesson-del {
+  position: absolute; top: 10px; right: 10px;
+  width: 26px; height: 26px; border-radius: 6px;
+  background: none; border: none; cursor: pointer;
+  color: var(--text3); font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: all .15s;
+}
+.lesson-item:hover .lesson-del { opacity: 1; }
+.lesson-del:hover { background: var(--red-bg); color: var(--red); }
+
+/* ═══════════════════════════════════
+   LESSON GRADEBOOK SCREEN
+═══════════════════════════════════ */
+#s-lesson {
+  z-index: 3;
+}
+.lesson-gb-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 20px;
+  display: flex; align-items: center; gap: 10px;
+  flex-shrink: 0;
+}
+.lesson-gb-name {
+  font-size: 16px; font-weight: 700;
+  letter-spacing: -.3px;
+}
+.lesson-gb-date {
+  font-size: 12px; color: var(--text3);
+  margin-top: 2px;
+}
+.lesson-gb-actions { margin-left: auto; display: flex; gap: 8px; }
+
+/* Stats bar */
+.stats-strip {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 20px;
+  display: flex; gap: 16px;
+  flex-shrink: 0; overflow-x: auto;
+  scrollbar-width: none;
+}
+.stats-strip::-webkit-scrollbar { display: none; }
+.stat-chip {
+  display: flex; align-items: center; gap: 7px;
+  padding: 6px 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-size: 12px; white-space: nowrap;
+  flex-shrink: 0;
+}
+.stat-chip-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+}
+
+/* Gradebook table */
+.gradebook-scroll { flex: 1; overflow: auto; }
+.gb-table {
+  width: max-content; min-width: 100%;
+  border-collapse: separate; border-spacing: 0;
+}
+.gb-table thead { position: sticky; top: 0; z-index: 10; }
+.gb-table th {
+  background: var(--text);
+  color: white;
+  padding: 10px 16px;
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .7px;
+  text-align: left; white-space: nowrap;
+  border-right: 1px solid rgba(255,255,255,.08);
+}
+.gb-table th:last-child { border-right: none; }
+.gb-table th.th-student {
+  position: sticky; left: 0; z-index: 11;
+  min-width: 180px;
+  border-right: 1px solid rgba(255,255,255,.15);
+}
+.th-inner-flex { display: flex; align-items: center; gap: 6px; }
+.th-col-actions {
+  display: flex; gap: 2px; opacity: 0;
+  transition: opacity .15s; margin-left: auto;
+}
+th:hover .th-col-actions { opacity: 1; }
+.th-col-btn {
+  width: 18px; height: 18px; border-radius: 3px;
+  background: rgba(255,255,255,.15); border: none;
+  color: white; font-size: 10px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.th-col-btn:hover { background: rgba(255,255,255,.3); }
+
+.gb-table tbody tr:hover td { background: #f0f7ff !important; }
+.gb-table tbody tr:nth-child(even) td { background: var(--surface2); }
+.gb-table td {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  padding: 0; height: 46px;
+}
+.gb-table td:last-child { border-right: none; }
+.gb-table td.td-student {
+  padding: 0 14px;
+  position: sticky; left: 0; z-index: 5;
+  background: inherit;
+  border-right: 1px solid var(--border2);
+}
+.td-student-inner {
+  display: flex; align-items: center; gap: 9px;
+}
+.td-mini-av {
+  width: 26px; height: 26px; border-radius: 6px;
+  background: linear-gradient(135deg, var(--blue), #818cf8);
+  color: white; font-size: 9px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.td-name-text { font-size: 13px; font-weight: 600; white-space: nowrap; }
+.td-att-cell {
+  text-align: center; width: 120px; padding: 0 12px;
+}
+.att-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 11px; border-radius: 100px;
+  font-size: 11px; font-weight: 700;
+  cursor: pointer; user-select: none;
+  transition: transform .1s, filter .1s;
+  white-space: nowrap;
+}
+.att-chip:hover { filter: brightness(.93); }
+.att-chip:active { transform: scale(.94); }
+.att-chip.present { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+.att-chip.late    { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
+.att-chip.absent  { background: var(--red-bg);   color: var(--red);   border: 1px solid var(--red-border); }
+.grade-inp {
+  width: 100%; height: 46px;
+  border: none; background: transparent;
+  font-family: var(--font); font-size: 13px; font-weight: 500;
+  color: var(--text); padding: 0 16px; outline: none;
+}
+.grade-inp:focus { background: var(--blue-light); box-shadow: inset 0 0 0 2px var(--blue); }
+.grade-inp::placeholder { color: var(--border2); }
+.add-student-row td { background: var(--surface) !important; }
+.add-row-inp {
+  width: 100%; height: 44px;
+  border: none; background: transparent;
+  font-family: var(--font); font-size: 13px; font-weight: 400;
+  color: var(--text2); padding: 0 14px; outline: none;
+  font-style: italic;
+}
+.add-row-inp:focus { background: var(--blue-light); font-style: normal; }
+.add-row-inp::placeholder { color: var(--text3); }
+
+/* ═══════════════════════════════════
+   ANALYTICS TAB
+═══════════════════════════════════ */
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.astat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+.astat-val { font-size: 28px; font-weight: 800; letter-spacing: -1px; }
+.astat-lbl { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.att-table {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border-collapse: collapse;
+}
+.att-table th {
+  background: var(--text);
+  color: white;
+  padding: 11px 16px;
+  font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .7px;
+  text-align: left;
+}
+.att-table td {
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.att-table tr:last-child td { border-bottom: none; }
+.att-table tr:hover td { background: var(--blue-light); }
+.att-table tr:nth-child(even) td { background: var(--surface2); }
+.att-table tr:nth-child(even):hover td { background: var(--blue-light); }
+.rate-bar-wrap {
+  display: flex; align-items: center; gap: 8px;
+}
+.rate-bar {
+  width: 72px; height: 5px;
+  background: var(--surface3);
+  border-radius: 3px; overflow: hidden;
+  flex-shrink: 0;
+}
+.rate-bar-fill { height: 100%; border-radius: 3px; transition: width .4s; }
+
+/* ═══════════════════════════════════
+   MODALS
+═══════════════════════════════════ */
+.ov {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.4);
+  z-index: 100;
+  align-items: center; justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+}
+.ov.open { display: flex; }
+.modal {
+  background: var(--surface);
+  border-radius: 18px;
+  width: 100%; max-width: 460px;
+  padding: 28px;
+  box-shadow: var(--shadow-lg);
+  animation: popIn .22s cubic-bezier(.34,1.56,.64,1);
+}
+.modal-lg { max-width: 540px; }
+@keyframes popIn {
+  from { transform: scale(.88); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+.modal-hdr {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 22px;
+}
+.modal-icon {
+  width: 38px; height: 38px; border-radius: 9px;
+  background: var(--blue-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; flex-shrink: 0;
+}
+.modal-title { font-size: 17px; font-weight: 700; letter-spacing: -.3px; }
+.modal-sub { font-size: 12px; color: var(--text3); margin-top: 1px; }
+.modal-foot {
+  display: flex; gap: 8px;
+  margin-top: 22px; justify-content: flex-end;
+}
+.fg { margin-bottom: 14px; }
+.flabel {
+  display: block; font-size: 11px; font-weight: 600;
+  color: var(--text2); text-transform: uppercase;
+  letter-spacing: .6px; margin-bottom: 6px;
+}
+.finput, .fselect {
+  width: 100%;
+  font-family: var(--font); font-size: 14px;
+  padding: 10px 13px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg); color: var(--text);
+  outline: none; transition: border-color .15s, box-shadow .15s;
+}
+.finput:focus, .fselect:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+}
+.frow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* ═══════════════════════════════════
+   BUTTONS
+═══════════════════════════════════ */
+.btn {
+  font-family: var(--font); font-size: 13px; font-weight: 600;
+  padding: 8px 16px; border-radius: var(--radius-sm);
+  border: none; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: all .15s; white-space: nowrap; letter-spacing: -.1px;
+}
+.btn-primary   { background: var(--blue); color: white; }
+.btn-primary:hover   { background: var(--blue-dark); box-shadow: 0 2px 8px rgba(37,99,235,.35); }
+.btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+.btn-secondary:hover { background: var(--border); }
+.btn-ghost     { background: transparent; color: var(--text2); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--surface2); }
+.btn-danger    { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+.btn-danger:hover { background: var(--red); color: white; }
+.btn-sm  { padding: 6px 12px; font-size: 12px; }
+.btn-xs  { padding: 4px 9px; font-size: 11px; border-radius: 6px; }
+.icon-btn {
+  width: 30px; height: 30px; padding: 0;
+  border-radius: var(--radius-sm);
+  background: var(--surface2); border: 1px solid var(--border);
+  cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+  color: var(--text2); font-size: 14px; transition: all .15s;
+}
+.icon-btn:hover { background: var(--border); color: var(--text); }
+
+/* Confirm modal */
+.confirm-modal { max-width: 360px; }
+.confirm-desc { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+/* Side sheet */
+.sheet-ov {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.35); z-index: 100;
+  justify-content: flex-end;
+  backdrop-filter: blur(4px);
+}
+.sheet-ov.open { display: flex; }
+.sheet {
+  background: var(--surface);
+  width: 100%; max-width: 420px; height: 100%;
+  overflow-y: auto; padding: 28px;
+  box-shadow: var(--shadow-lg);
+  animation: sheetIn .22s ease;
+}
+@keyframes sheetIn {
+  from { transform: translateX(48px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+.sheet-hdr { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 24px; }
+.sheet-av {
+  width: 52px; height: 52px; border-radius: 13px;
+  background: linear-gradient(135deg, var(--blue), #818cf8);
+  color: white; font-size: 16px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.sheet-name { font-size: 19px; font-weight: 700; letter-spacing: -.3px; }
+.sheet-class-name { font-size: 12px; color: var(--text3); margin-top: 2px; }
+.sheet-x {
+  margin-left: auto; width: 30px; height: 30px;
+  border-radius: 7px; background: var(--surface2); border: none;
+  cursor: pointer; font-size: 17px; color: var(--text2);
+  display: flex; align-items: center; justify-content: center;
+}
+.sheet-x:hover { background: var(--border); }
+.sheet-sec { margin-bottom: 22px; }
+.sheet-sec-title {
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .9px;
+  color: var(--text3); margin-bottom: 10px;
+}
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.info-card {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 11px 13px;
+}
+.info-card-label { font-size: 10px; color: var(--text3); margin-bottom: 3px; }
+.info-card-val { font-size: 13px; font-weight: 600; color: var(--text); word-break: break-all; }
+.history-row {
+  display: flex; align-items: center;
+  padding: 9px 12px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); margin-bottom: 5px; gap: 10px;
+}
+.history-date { font-size: 12px; font-weight: 600; flex: 1; }
+.history-topic { font-size: 12px; color: var(--text3); flex: 2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 24px; left: 50%;
+  transform: translateX(-50%);
+  background: #111827; color: white;
+  padding: 10px 20px; border-radius: 100px;
+  font-size: 13px; font-weight: 500;
+  z-index: 999; white-space: nowrap;
+  box-shadow: var(--shadow-md);
+  animation: toastPop .2s ease;
+  pointer-events: none;
+}
+@keyframes toastPop {
+  from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* Empty state */
+.empty-state {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 10px; color: var(--text3); padding: 48px 24px;
+  text-align: center;
+}
+.empty-icon { font-size: 36px; margin-bottom: 4px; }
+.empty-title { font-size: 15px; font-weight: 600; color: var(--text2); }
+.empty-desc { font-size: 13px; line-height: 1.6; max-width: 280px; }
+
+/* Animations */
+.fade-up { animation: fadeUp .2s ease forwards; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════
+     AUTH SCREEN
+════════════════════════════════════ -->
+<div id="s-auth" class="screen active">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">CB</div>
+      <div class="auth-logo-text">Classbook</div>
+    </div>
+    <div class="auth-title" id="auth-title">Welcome back</div>
+    <div class="auth-sub" id="auth-sub">Sign in to your teacher account</div>
+    
+    <div class="auth-tabs" style="margin-top:20px">
+      <button class="auth-tab active" id="tab-signin" onclick="authSwitchTab('signin')">Sign In</button>
+      <button class="auth-tab" id="tab-signup" onclick="authSwitchTab('signup')">Sign Up</button>
+    </div>
+    
+    <div id="auth-error" class="auth-error"></div>
+    
+    <div id="form-signup" style="display:none">
+      <div class="auth-form-group">
+        <label class="auth-label">Full Name</label>
+        <input class="auth-input" id="auth-fullname" placeholder="Your full name">
+      </div>
+    </div>
+    <div class="auth-form-group">
+      <label class="auth-label">Email</label>
+      <input class="auth-input" id="auth-email" placeholder="teacher@school.com" type="email">
+    </div>
+    <div class="auth-form-group">
+      <label class="auth-label">Password</label>
+      <input class="auth-input" id="auth-password" placeholder="••••••••" type="password" onkeydown="if(event.key==='Enter')authSubmit()">
+    </div>
+    <button class="auth-btn" onclick="authSubmit()" id="auth-submit-btn">Sign In</button>
+    
+    <div class="auth-divider">
+      <div class="auth-divider-line"></div>
+      <div class="auth-divider-text">or continue offline</div>
+      <div class="auth-divider-line"></div>
+    </div>
+    <button class="auth-btn" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1)" onclick="authGuest()">
+      Continue without account
+    </button>
+
+    <div class="supabase-panel">
+      <div class="supabase-panel-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        Supabase
+        <span class="supabase-status local" id="sb-status">● Local mode</span>
+      </div>
+      <input class="auth-input" id="sb-url" placeholder="https://xxx.supabase.co" style="margin-bottom:8px;font-size:12px">
+      <input class="auth-input" id="sb-anon" placeholder="anon key" style="font-size:12px">
+      <button class="auth-btn" style="margin-top:8px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);font-size:12px;padding:8px" onclick="connectSupabase()">Connect Supabase</button>
+    </div>
+    <div class="auth-note">Your data is stored locally on this device.<br>Connect Supabase above to sync across devices.</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     HOME SCREEN
+════════════════════════════════════ -->
+<div id="s-home" class="screen">
+  <div class="topbar">
+    <div class="topbar-logo">
+      <div class="logo-mark">CB</div>
+    </div>
+    <div class="topbar-right">
+      <div class="save-pill" id="save-pill-home">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+        Saved
+      </div>
+      <div class="user-pill" onclick="showUserMenu()">
+        <div class="user-avatar" id="user-av">?</div>
+        <div class="user-name" id="user-name-display">Guest</div>
+      </div>
+    </div>
+  </div>
+  <div class="body" style="flex:1;overflow-y:auto;padding:24px 20px">
+    <div class="home-header">
+      <div>
+        <div class="home-greeting" id="home-greeting">Good morning 👋</div>
+        <div class="home-sub">Manage your classrooms and track student progress</div>
+      </div>
+      <button class="btn btn-primary" onclick="openOv('ov-new-class')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        New Classroom
+      </button>
+    </div>
+    <div class="classrooms-grid" id="classrooms-grid"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     CLASSROOM SCREEN
+════════════════════════════════════ -->
+<div id="s-classroom" class="screen slide-from-right">
+  <div class="topbar">
+    <button class="back-btn" onclick="goHome()">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Classrooms
+    </button>
+    <span class="topbar-sep">/</span>
+    <span class="topbar-crumb active" id="class-crumb">Class</span>
+    <div class="topbar-right">
+      <div class="save-pill" id="save-pill-class">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+        Saved
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="exportClassPDF()">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export PDF
+      </button>
+    </div>
+  </div>
+  <div class="tabs-bar">
+    <button class="tab-btn active" data-tab="students" onclick="switchTab('students',this)">
+      Students <span class="tab-badge" id="tbadge-students">0</span>
+    </button>
+    <button class="tab-btn" data-tab="lessons" onclick="switchTab('lessons',this)">
+      Lessons <span class="tab-badge" id="tbadge-lessons">0</span>
+    </button>
+    <button class="tab-btn" data-tab="analytics" onclick="switchTab('analytics',this)">
+      Analytics
+    </button>
+  </div>
+  <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+    <!-- STUDENTS TAB -->
+    <div id="tp-students" class="tab-panel active">
+      <div class="panel-hdr">
+        <div class="panel-hdr-title">Class roster</div>
+        <div class="panel-hdr-count" id="students-count">0</div>
+        <div class="panel-hdr-right">
+          <button class="btn btn-primary btn-sm" onclick="openAddStudent()">+ Add Student</button>
+        </div>
+      </div>
+      <div class="panel-scroll" id="students-list"></div>
+    </div>
+    <!-- LESSONS TAB -->
+    <div id="tp-lessons" class="tab-panel">
+      <div class="panel-hdr">
+        <div class="panel-hdr-title">All lessons</div>
+        <div class="panel-hdr-count" id="lessons-count">0</div>
+        <div class="panel-hdr-right">
+          <button class="btn btn-primary btn-sm" onclick="openAddLesson()">+ New Lesson</button>
+        </div>
+      </div>
+      <div class="panel-scroll">
+        <div class="lessons-list" id="lessons-list"></div>
+      </div>
+    </div>
+    <!-- ANALYTICS TAB -->
+    <div id="tp-analytics" class="tab-panel">
+      <div class="panel-hdr">
+        <div class="panel-hdr-title">Attendance analytics</div>
+        <div class="panel-hdr-right">
+          <button class="btn btn-secondary btn-sm" onclick="renderAnalytics()">↺ Refresh</button>
+        </div>
+      </div>
+      <div class="panel-scroll" id="analytics-scroll"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     LESSON GRADEBOOK SCREEN
+════════════════════════════════════ -->
+<div id="s-lesson" class="screen slide-from-right">
+  <div class="topbar">
+    <button class="back-btn" onclick="goBackToClass()">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      <span id="lesson-back-label">Class</span>
+    </button>
+    <span class="topbar-sep">/</span>
+    <span class="topbar-crumb active" id="lesson-crumb">Lesson</span>
+    <div class="topbar-right">
+      <div class="save-pill" id="save-pill-lesson">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+        Saved
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="openAddColumn()">+ Column</button>
+      <button class="btn btn-primary btn-sm" onclick="exportLessonPDF()">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export
+      </button>
+    </div>
+  </div>
+  <div class="lesson-gb-header">
+    <div>
+      <div class="lesson-gb-name" id="lgb-name"></div>
+      <div class="lesson-gb-date" id="lgb-date"></div>
+    </div>
+  </div>
+  <div class="stats-strip" id="stats-strip"></div>
+  <div class="gradebook-scroll">
+    <table class="gb-table" id="gb-table">
+      <thead id="gb-head"></thead>
+      <tbody id="gb-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     MODALS
+════════════════════════════════════ -->
+
+<!-- New Classroom -->
+<div class="ov" id="ov-new-class">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-icon">🏫</div>
+      <div>
+        <div class="modal-title">New Classroom</div>
+        <div class="modal-sub">Set up your new class</div>
+      </div>
+    </div>
+    <div class="fg">
+      <label class="flabel">Classroom Name</label>
+      <input class="finput" id="inp-cname" placeholder="e.g. 10A Mathematics" onkeydown="ifEnter(event,createClassroom)">
+    </div>
+    <div class="frow">
+      <div class="fg">
+        <label class="flabel">Subject</label>
+        <input class="finput" id="inp-csub" placeholder="e.g. Math">
+      </div>
+      <div class="fg">
+        <label class="flabel">Your Name</label>
+        <input class="finput" id="inp-cteacher" placeholder="Teacher name">
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeOv('ov-new-class')">Cancel</button>
+      <button class="btn btn-primary" onclick="createClassroom()">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add / Edit Student -->
+<div class="ov" id="ov-student">
+  <div class="modal modal-lg">
+    <div class="modal-hdr">
+      <div class="modal-icon">👤</div>
+      <div>
+        <div class="modal-title" id="ov-stu-title">Add Student</div>
+        <div class="modal-sub">Student and parent contact info</div>
+      </div>
+    </div>
+    <div class="fg">
+      <label class="flabel">Full Name</label>
+      <input class="finput" id="inp-sname" placeholder="e.g. Bekzod Aliyev">
+    </div>
+    <div class="frow">
+      <div class="fg">
+        <label class="flabel">Student Phone</label>
+        <input class="finput" id="inp-sphone" placeholder="+998 90 000 00 00">
+      </div>
+      <div class="fg">
+        <label class="flabel">Student Email</label>
+        <input class="finput" id="inp-semail" placeholder="student@email.com">
+      </div>
+    </div>
+    <div class="frow">
+      <div class="fg">
+        <label class="flabel">Parent / Guardian</label>
+        <input class="finput" id="inp-pname" placeholder="Parent full name">
+      </div>
+      <div class="fg">
+        <label class="flabel">Parent Phone</label>
+        <input class="finput" id="inp-pphone" placeholder="+998 90 000 00 00">
+      </div>
+    </div>
+    <div class="fg">
+      <label class="flabel">Notes</label>
+      <input class="finput" id="inp-snote" placeholder="Optional notes...">
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeOv('ov-student')">Cancel</button>
+      <button class="btn btn-primary" id="stu-save-btn" onclick="saveStudent()">Add Student</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Lesson -->
+<div class="ov" id="ov-lesson">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-icon">📅</div>
+      <div>
+        <div class="modal-title">New Lesson</div>
+        <div class="modal-sub">Create a lesson to record attendance & grades</div>
+      </div>
+    </div>
+    <div class="fg">
+      <label class="flabel">Lesson Title / Topic</label>
+      <input class="finput" id="inp-ltopic" placeholder="e.g. Chapter 5 — Algebra">
+    </div>
+    <div class="frow">
+      <div class="fg">
+        <label class="flabel">Date</label>
+        <input class="finput" id="inp-ldate" type="date">
+      </div>
+      <div class="fg">
+        <label class="flabel">Lesson №</label>
+        <input class="finput" id="inp-lnum" type="number" min="1" placeholder="auto">
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeOv('ov-lesson')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveLesson()">Create Lesson</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Column -->
+<div class="ov" id="ov-column">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-icon">📊</div>
+      <div>
+        <div class="modal-title">Add Grade Column</div>
+      </div>
+    </div>
+    <div class="fg">
+      <label class="flabel">Column Name</label>
+      <input class="finput" id="inp-colname" placeholder="e.g. Quiz 1, Midterm, Oral..." onkeydown="ifEnter(event,saveColumn)">
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeOv('ov-column')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveColumn()">Add Column</button>
+    </div>
+  </div>
+</div>
+
+<!-- Rename Column -->
+<div class="ov" id="ov-rename-col">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-icon">✏️</div>
+      <div><div class="modal-title">Rename Column</div></div>
+    </div>
+    <div class="fg">
+      <label class="flabel">New Name</label>
+      <input class="finput" id="inp-rename-col" placeholder="Column name" onkeydown="ifEnter(event,confirmRenameCol)">
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeOv('ov-rename-col')">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmRenameCol()">Rename</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Lesson -->
+<div class="ov" id="ov-edit-lesson">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-icon">✏️</div>
+      <div><div class="modal-title">Edit Lesson</div></div>
+    </div>
+    <div class="fg">
+      <label class="flabel">Lesson Title</label>
+      <input class="finput" id="inp-el-topic" placeholder="Lesson topic">
+    </div>
+    <div class="frow">
+      <div class="fg">
+        <label class="flabel">Date</label>
+        <input class="finput" id="inp-el-date" type="date">
+      </div>
+      <div class="fg">
+        <label class="flabel">Lesson №</label>
+        <input class="finput" id="inp-el-num" type="number" min="1">
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeOv('ov-edit-lesson')">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmEditLesson()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm -->
+<div class="ov" id="ov-confirm">
+  <div class="modal confirm-modal">
+    <div class="modal-hdr">
+      <div class="modal-icon" style="background:var(--red-bg)">⚠️</div>
+      <div><div class="modal-title" id="confirm-title">Confirm</div></div>
+    </div>
+    <div class="confirm-desc" id="confirm-desc"></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeOv('ov-confirm')">Cancel</button>
+      <button class="btn btn-danger" id="confirm-ok-btn" onclick="confirmOk()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- Student Sheet -->
+<div class="sheet-ov" id="sheet-ov" onclick="closeSheetIfBg(event)">
+  <div class="sheet" id="sheet-content"></div>
+</div>
+
+<!-- User menu -->
+<div class="ov" id="ov-user">
+  <div class="modal" style="max-width:300px">
+    <div class="modal-hdr">
+      <div class="modal-icon">👤</div>
+      <div>
+        <div class="modal-title" id="um-name">Teacher</div>
+        <div class="modal-sub" id="um-email">Offline mode</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <button class="btn btn-ghost" style="width:100%;justify-content:center" onclick="closeOv('ov-user')">Close</button>
+      <button class="btn btn-danger" style="width:100%;justify-content:center" onclick="signOut()">Sign Out</button>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+// ════════════════════════════════════
+//  DB
+// ════════════════════════════════════
+let DB = { classrooms: [], nextId: 1, user: null };
+
+function loadDB() {
+  try { const s = localStorage.getItem('cb_v3'); if(s) DB = JSON.parse(s); } catch(e) {}
+}
+let _st;
+function saveDB(badge) {
+  clearTimeout(_st);
+  _st = setTimeout(() => {
+    try { localStorage.setItem('cb_v3', JSON.stringify(DB)); } catch(e) {}
+    if (badge) showSave(badge);
+  }, 150);
+}
+function showSave(badge) {
+  const el = document.getElementById('save-pill-' + badge);
+  if (!el) return;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 2400);
+}
+
+function getC(id) { return DB.classrooms.find(c => c.id === id); }
+let CID = null, LID = null;
+function CC() { return getC(CID); }
+function CL() { return CC() && CC().lessons.find(l => l.id === LID); }
+
+// ════════════════════════════════════
+//  AUTH
+// ════════════════════════════════════
+let authMode = 'signin';
+let supabaseConfig = { url: '', anon: '' };
+
+function authSwitchTab(mode) {
+  authMode = mode;
+  document.getElementById('tab-signin').classList.toggle('active', mode === 'signin');
+  document.getElementById('tab-signup').classList.toggle('active', mode === 'signup');
+  document.getElementById('form-signup').style.display = mode === 'signup' ? 'block' : 'none';
+  document.getElementById('auth-title').textContent = mode === 'signin' ? 'Welcome back' : 'Create account';
+  document.getElementById('auth-sub').textContent = mode === 'signin' ? 'Sign in to your teacher account' : 'Join Classbook today';
+  document.getElementById('auth-submit-btn').textContent = mode === 'signin' ? 'Sign In' : 'Create Account';
+  document.getElementById('auth-error').classList.remove('show');
+}
+
+function authError(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg; el.classList.add('show');
+}
+
+function authSubmit() {
+  const email = document.getElementById('auth-email').value.trim();
+  const pass = document.getElementById('auth-password').value;
+  if (!email || !pass) { authError('Please fill in all fields.'); return; }
+  if (pass.length < 6) { authError('Password must be at least 6 characters.'); return; }
+
+  if (supabaseConfig.url && supabaseConfig.anon) {
+    authError('Supabase connected — integrate auth in next step. Using local mode for now.');
+    // Placeholder: when Supabase is connected you'd call supabase.auth.signIn/signUp here
+    return;
+  }
+
+  // Local auth simulation
+  const name = authMode === 'signup' ? document.getElementById('auth-fullname').value.trim() : '';
+  if (authMode === 'signup' && !name) { authError('Please enter your full name.'); return; }
+
+  DB.user = { email, name: name || email.split('@')[0], mode: 'local' };
+  saveDB();
+  enterApp();
+}
+
+function authGuest() {
+  DB.user = { email: '', name: 'Guest Teacher', mode: 'guest' };
+  saveDB();
+  enterApp();
+}
+
+function connectSupabase() {
+  const url = document.getElementById('sb-url').value.trim();
+  const anon = document.getElementById('sb-anon').value.trim();
+  if (!url || !anon) { authError('Enter both Supabase URL and anon key.'); return; }
+  supabaseConfig = { url, anon };
+  document.getElementById('sb-status').className = 'supabase-status connected';
+  document.getElementById('sb-status').textContent = '● Connected';
+  toast('Supabase config saved! Add auth.js to complete integration.');
+}
+
+function enterApp() {
+  const user = DB.user;
+  document.getElementById('user-name-display').textContent = user.name;
+  document.getElementById('user-av').textContent = user.name.slice(0,2).toUpperCase();
+  document.getElementById('um-name').textContent = user.name;
+  document.getElementById('um-email').textContent = user.email || 'Offline mode';
+  
+  const h = new Date().getHours();
+  const greet = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('home-greeting').textContent = `${greet}, ${user.name.split(' ')[0]} 👋`;
+  
+  showScreen('s-home');
+  renderClassrooms();
+}
+
+function signOut() {
+  DB.user = null; saveDB();
+  closeOv('ov-user');
+  showScreen('s-auth');
+}
+
+function showUserMenu() {
+  openOv('ov-user');
+}
+
+// ════════════════════════════════════
+//  SCREENS
+// ════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function goHome() { showScreen('s-home'); renderClassrooms(); }
+function goBackToClass() {
+  showScreen('s-classroom');
+  switchTab('lessons', document.querySelector('[data-tab="lessons"]'));
+}
+
+// ════════════════════════════════════
+//  CLASSROOMS
+// ════════════════════════════════════
+const CC_ICONS = ['📐','📚','🔬','✏️','🎨','🌍','💻','🎵','🏃','📖','⚗️','🧬'];
+const CC_COLORS = ['#eff6ff','#f0fdf4','#fffbeb','#fef2f2','#faf5ff','#ecfdf5'];
+
+function renderClassrooms() {
+  const grid = document.getElementById('classrooms-grid');
+  grid.innerHTML = '';
+  DB.classrooms.forEach((c, i) => {
+    const card = document.createElement('div');
+    card.className = 'classroom-card fade-up';
+    card.style.animationDelay = (i * .05) + 's';
+    const icon = CC_ICONS[c.id % CC_ICONS.length];
+    const bg = CC_COLORS[c.id % CC_COLORS.length];
+    card.innerHTML = `
+      <div class="cc-color-bar"></div>
+      <div class="cc-header">
+        <div class="cc-icon" style="background:${bg}">${icon}</div>
+        <button class="cc-del" onclick="event.stopPropagation();deleteClassConfirm(${c.id})" title="Delete">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+        </button>
+      </div>
+      <div class="cc-name">${esc(c.name)}</div>
+      <div class="cc-subject">${esc(c.subject||'')}${c.teacher?' · '+esc(c.teacher):''}</div>
+      <div class="cc-stats">
+        <div><div class="cc-stat-val">${c.students.length}</div><div class="cc-stat-lbl">Students</div></div>
+        <div><div class="cc-stat-val">${c.lessons.length}</div><div class="cc-stat-lbl">Lessons</div></div>
+        <div><div class="cc-stat-val">${c.columns.length}</div><div class="cc-stat-lbl">Columns</div></div>
+      </div>`;
+    card.onclick = () => openClassroom(c.id);
+    grid.appendChild(card);
+  });
+  const newCard = document.createElement('div');
+  newCard.className = 'new-class-card';
+  newCard.innerHTML = `<div class="new-class-plus">+</div><span>New Classroom</span>`;
+  newCard.onclick = () => openOv('ov-new-class');
+  grid.appendChild(newCard);
+}
+
+function createClassroom() {
+  const name = v('inp-cname'); if (!name) { shake('inp-cname'); return; }
+  DB.classrooms.push({
+    id: DB.nextId++, name,
+    subject: v('inp-csub'), teacher: v('inp-cteacher'),
+    students: [], columns: [], lessons: [],
+    nextSid: 1, nextLid: 1, nextCid: 1
+  });
+  saveDB('home'); closeOv('ov-new-class');
+  clrInputs(['inp-cname','inp-csub','inp-cteacher']);
+  renderClassrooms(); toast('Classroom created!');
+}
+
+function deleteClassConfirm(id) {
+  const c = getC(id);
+  confirm_(`Delete "${c.name}"?`, 'All students, lessons, and grades will be permanently deleted.', () => {
+    DB.classrooms = DB.classrooms.filter(c => c.id !== id);
+    saveDB('home'); renderClassrooms(); toast('Deleted.');
+  });
+}
+
+// ════════════════════════════════════
+//  OPEN CLASSROOM
+// ════════════════════════════════════
+function openClassroom(id) {
+  CID = id;
+  const c = CC();
+  document.getElementById('class-crumb').textContent = c.name;
+  document.getElementById('lesson-back-label').textContent = c.name;
+  showScreen('s-classroom');
+  switchTab('students', document.querySelector('[data-tab="students"]'));
+  renderStudents();
+}
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tp-' + name).classList.add('active');
+  if (name === 'students') renderStudents();
+  if (name === 'lessons')  renderLessons();
+  if (name === 'analytics') renderAnalytics();
+}
+
+// ════════════════════════════════════
+//  STUDENTS
+// ════════════════════════════════════
+let editSid = null;
+
+function openAddStudent() {
+  editSid = null;
+  document.getElementById('ov-stu-title').textContent = 'Add Student';
+  document.getElementById('stu-save-btn').textContent = 'Add Student';
+  clrInputs(['inp-sname','inp-sphone','inp-semail','inp-pname','inp-pphone','inp-snote']);
+  openOv('ov-student');
+}
+function openEditStudent(sid) {
+  editSid = sid;
+  const s = CC().students.find(s => s.id === sid);
+  document.getElementById('ov-stu-title').textContent = 'Edit Student';
+  document.getElementById('stu-save-btn').textContent = 'Save';
+  sv('inp-sname', s.name); sv('inp-sphone', s.phone||'');
+  sv('inp-semail', s.email||''); sv('inp-pname', s.parentName||'');
+  sv('inp-pphone', s.parentPhone||''); sv('inp-snote', s.note||'');
+  openOv('ov-student');
+}
+function saveStudent() {
+  const name = v('inp-sname'); if (!name) { shake('inp-sname'); return; }
+  const data = { name, phone:v('inp-sphone'), email:v('inp-semail'), parentName:v('inp-pname'), parentPhone:v('inp-pphone'), note:v('inp-snote') };
+  const c = CC();
+  if (editSid !== null) {
+    Object.assign(c.students.find(s => s.id === editSid), data);
+    toast('Student updated!');
+  } else {
+    c.students.push({ id: c.nextSid++, ...data });
+    toast('Student added!');
+  }
+  saveDB('class'); closeOv('ov-student'); renderStudents();
+}
+
+function renderStudents() {
+  const c = CC();
+  const list = document.getElementById('students-list');
+  document.getElementById('students-count').textContent = c.students.length;
+  document.getElementById('tbadge-students').textContent = c.students.length;
+  list.innerHTML = '';
+  const sorted = [...c.students].sort((a,b) => a.name.localeCompare(b.name));
+  if (!sorted.length) {
+    list.innerHTML = `<div class="empty-state"><div class="empty-icon">👤</div><div class="empty-title">No students yet</div><div class="empty-desc">Add students to your class using the button above.</div></div>`;
+    return;
+  }
+  sorted.forEach((s, i) => {
+    const st = studentStats(s.id);
+    const initials = s.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    const el = document.createElement('div');
+    el.className = 'student-item fade-up';
+    el.style.animationDelay = (i*.04)+'s';
+    el.innerHTML = `
+      <div class="s-avatar">${initials}</div>
+      <div class="s-info">
+        <div class="s-name">${esc(s.name)}</div>
+        <div class="s-meta">
+          ${s.phone?`<span class="s-meta-item">📱 ${esc(s.phone)}</span>`:''}
+          ${s.parentPhone?`<span class="s-meta-item">👨‍👩‍👧 ${esc(s.parentPhone)}</span>`:''}
+          ${s.note?`<span class="s-meta-item">📝 ${esc(s.note)}</span>`:''}
+        </div>
+      </div>
+      <div class="s-att-pills">
+        ${st.total>0?`
+          <span class="pill pill-green">✓ ${st.present}</span>
+          ${st.late>0?`<span class="pill pill-amber">⏰ ${st.late}</span>`:''}
+          ${st.absent>0?`<span class="pill pill-red">✗ ${st.absent}</span>`:''}
+        `:'<span style="font-size:11px;color:var(--text3)">No lessons</span>'}
+      </div>
+      <div class="s-actions">
+        <button class="btn btn-xs btn-secondary" onclick="event.stopPropagation();openStudentSheet(${s.id})">View</button>
+        <button class="btn btn-xs btn-secondary" onclick="event.stopPropagation();openEditStudent(${s.id})">Edit</button>
+        <button class="icon-btn" style="width:28px;height:28px" onclick="event.stopPropagation();delStudentConfirm(${s.id})">
+          <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+        </button>
+      </div>`;
+    el.onclick = () => openStudentSheet(s.id);
+    list.appendChild(el);
+  });
+}
+
+function delStudentConfirm(sid) {
+  const s = CC().students.find(s=>s.id===sid);
+  confirm_(`Remove "${s.name}"?`, 'All attendance and grades for this student will be removed.', () => {
+    const c = CC(); c.students = c.students.filter(s=>s.id!==sid);
+    saveDB('class'); renderStudents(); toast('Student removed.');
+  });
+}
+
+function studentStats(sid) {
+  const c = CC();
+  let present=0,late=0,absent=0;
+  c.lessons.forEach(l => {
+    const v = (l.data||{})[`att_${sid}`]||'present';
+    if(v==='present')present++; else if(v==='late')late++; else absent++;
+  });
+  return {present,late,absent,total:c.lessons.length};
+}
+
+function openStudentSheet(sid) {
+  const c = CC(), s = c.students.find(s=>s.id===sid);
+  const st = studentStats(sid);
+  const rate = st.total>0 ? Math.round(st.present/st.total*100) : 100;
+  const rateColor = rate>=80?'var(--green)':rate>=60?'var(--amber)':'var(--red)';
+  const initials = s.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const hist = c.lessons.slice().reverse().map(l=>{
+    const val = (l.data||{})[`att_${s.id}`]||'present';
+    const cls={present:'p',late:'l',absent:'a'};
+    const lbl={present:'Present',late:'Late',absent:'Absent'};
+    return `<div class="history-row">
+      <div class="history-date">${l.date}</div>
+      <div class="history-topic">${esc(l.topic||'(no topic)')}</div>
+      <span class="pill pill-${val==='present'?'green':val==='late'?'amber':'red'}">${lbl[val]}</span>
+    </div>`;
+  }).join('') || '<p style="font-size:13px;color:var(--text3)">No lessons recorded yet.</p>';
+
+  document.getElementById('sheet-content').innerHTML = `
+    <div class="sheet-hdr">
+      <div class="sheet-av">${initials}</div>
+      <div>
+        <div class="sheet-name">${esc(s.name)}</div>
+        <div class="sheet-class-name">${esc(c.name)}</div>
+      </div>
+      <button class="sheet-x" onclick="closeSheet()">×</button>
+    </div>
+    <div class="sheet-sec">
+      <div class="sheet-sec-title">Contact Info</div>
+      <div class="info-grid">
+        <div class="info-card"><div class="info-card-label">Student Phone</div><div class="info-card-val">${esc(s.phone||'—')}</div></div>
+        <div class="info-card"><div class="info-card-label">Email</div><div class="info-card-val" style="font-size:11px">${esc(s.email||'—')}</div></div>
+        <div class="info-card"><div class="info-card-label">Parent / Guardian</div><div class="info-card-val">${esc(s.parentName||'—')}</div></div>
+        <div class="info-card"><div class="info-card-label">Parent Phone</div><div class="info-card-val">${esc(s.parentPhone||'—')}</div></div>
+      </div>
+      ${s.note?`<div style="margin-top:8px;padding:10px 13px;background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:8px;font-size:12px;color:var(--text2)">📝 ${esc(s.note)}</div>`:''}
+    </div>
+    <div class="sheet-sec">
+      <div class="sheet-sec-title">Attendance Summary</div>
+      <div class="info-grid">
+        <div class="info-card"><div class="info-card-label">Total Lessons</div><div class="info-card-val">${st.total}</div></div>
+        <div class="info-card"><div class="info-card-label">Attendance Rate</div><div class="info-card-val" style="color:${rateColor}">${rate}%</div></div>
+        <div class="info-card"><div class="info-card-label">Present</div><div class="info-card-val" style="color:var(--green)">${st.present}</div></div>
+        <div class="info-card"><div class="info-card-label">Late</div><div class="info-card-val" style="color:var(--amber)">${st.late}</div></div>
+        <div class="info-card"><div class="info-card-label">Absent</div><div class="info-card-val" style="color:var(--red)">${st.absent}</div></div>
+      </div>
+    </div>
+    <div class="sheet-sec">
+      <div class="sheet-sec-title">Lesson History</div>
+      ${hist}
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-secondary" style="flex:1" onclick="openEditStudent(${sid});closeSheet()">Edit Student</button>
+      <button class="btn btn-danger" onclick="delStudentConfirm(${sid});closeSheet()">Remove</button>
+    </div>`;
+  document.getElementById('sheet-ov').classList.add('open');
+}
+function closeSheet() { document.getElementById('sheet-ov').classList.remove('open'); }
+function closeSheetIfBg(e) { if(e.target===document.getElementById('sheet-ov')) closeSheet(); }
+
+// ════════════════════════════════════
+//  LESSONS
+// ════════════════════════════════════
+function openAddLesson() {
+  document.getElementById('inp-ldate').value = todayStr();
+  document.getElementById('inp-ltopic').value = '';
+  document.getElementById('inp-lnum').value = '';
+  openOv('ov-lesson');
+}
+function saveLesson() {
+  const topic = v('inp-ltopic');
+  if (!topic) { shake('inp-ltopic'); return; }
+  const date = document.getElementById('inp-ldate').value || todayStr();
+  const c = CC();
+  const num = parseInt(document.getElementById('inp-lnum').value) || c.lessons.length + 1;
+  const lesson = { id: c.nextLid++, topic, date, num, data: {} };
+  c.lessons.push(lesson);
+  LID = lesson.id;
+  saveDB('class'); closeOv('ov-lesson'); renderLessons();
+  document.getElementById('tbadge-lessons').textContent = c.lessons.length;
+  toast('Lesson created! Tap it to open the gradebook.');
+}
+
+let editLid = null;
+function openEditLesson(lid) {
+  editLid = lid;
+  const l = CC().lessons.find(l=>l.id===lid);
+  sv('inp-el-topic', l.topic); sv('inp-el-date', l.date);
+  document.getElementById('inp-el-num').value = l.num||'';
+  openOv('ov-edit-lesson');
+}
+function confirmEditLesson() {
+  const topic = v('inp-el-topic'); if (!topic) { shake('inp-el-topic'); return; }
+  const l = CC().lessons.find(l=>l.id===editLid);
+  l.topic = topic; l.date = v('inp-el-date') || l.date;
+  l.num = parseInt(document.getElementById('inp-el-num').value) || l.num;
+  saveDB('class'); closeOv('ov-edit-lesson'); renderLessons();
+  if (LID === editLid) renderLessonHeader();
+}
+
+function renderLessons() {
+  const c = CC();
+  const list = document.getElementById('lessons-list');
+  document.getElementById('lessons-count').textContent = c.lessons.length;
+  document.getElementById('tbadge-lessons').textContent = c.lessons.length;
+  list.innerHTML = '';
+  if (!c.lessons.length) {
+    list.innerHTML = `<div class="empty-state"><div class="empty-icon">📅</div><div class="empty-title">No lessons yet</div><div class="empty-desc">Create a lesson to start recording attendance and grades.</div></div>`;
+    return;
+  }
+  const sorted = [...c.lessons].sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);
+  sorted.forEach((l, i) => {
+    let p=0,la=0,ab=0;
+    c.students.forEach(s=>{
+      const val=(l.data||{})[`att_${s.id}`]||'present';
+      if(val==='present')p++; else if(val==='late')la++; else ab++;
+    });
+    const el = document.createElement('div');
+    el.className = 'lesson-item fade-up';
+    el.style.animationDelay = (i*.04)+'s';
+    el.innerHTML = `
+      <div class="lesson-number">${l.num||i+1}</div>
+      <div class="lesson-info">
+        <div class="lesson-name">${esc(l.topic)}</div>
+        <div class="lesson-date-row">
+          <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>${l.date}</span>
+          <span style="color:var(--border2)">·</span>
+          <span>${c.students.length} students</span>
+        </div>
+      </div>
+      ${c.students.length>0?`<div class="lesson-att-mini">
+        <div class="att-dot p" title="Present">${p}</div>
+        ${la>0?`<div class="att-dot l" title="Late">${la}</div>`:''}
+        ${ab>0?`<div class="att-dot a" title="Absent">${ab}</div>`:''}
+      </div>`:''}
+      <button class="lesson-del" onclick="event.stopPropagation();delLessonConfirm(${l.id})" title="Delete">×</button>
+      <button style="background:none;border:none;cursor:pointer;padding:4px 6px;color:var(--text3);margin-right:4px;border-radius:6px;transition:background .1s" 
+        onclick="event.stopPropagation();openEditLesson(${l.id})" title="Edit">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </button>
+      <span class="lesson-arrow">→</span>`;
+    el.onclick = () => openLesson(l.id);
+    list.appendChild(el);
+  });
+}
+
+function delLessonConfirm(lid) {
+  const l = CC().lessons.find(l=>l.id===lid);
+  confirm_(`Delete lesson "${l.topic}"?`, 'All attendance and grade data for this lesson will be lost.', () => {
+    const c = CC(); c.lessons = c.lessons.filter(l=>l.id!==lid);
+    if(LID===lid) LID=null;
+    saveDB('class'); renderLessons(); toast('Lesson deleted.');
+  });
+}
+
+// ════════════════════════════════════
+//  LESSON GRADEBOOK SCREEN
+// ════════════════════════════════════
+function openLesson(lid) {
+  LID = lid;
+  renderLessonHeader();
+  renderGradebook();
+  showScreen('s-lesson');
+}
+
+function renderLessonHeader() {
+  const l = CL(); if(!l) return;
+  document.getElementById('lgb-name').textContent = l.topic;
+  document.getElementById('lgb-date').textContent = l.date + (l.num ? ` · Lesson ${l.num}` : '');
+  document.getElementById('lesson-crumb').textContent = l.topic;
+}
+
+function renderGradebook() {
+  const c = CC(), l = CL();
+  if (!l) return;
+  const sorted = [...c.students].sort((a,b)=>a.name.localeCompare(b.name));
+
+  // Stats strip
+  let p=0,la=0,ab=0;
+  sorted.forEach(s=>{
+    const v=(l.data||{})[`att_${s.id}`]||'present';
+    if(v==='present')p++; else if(v==='late')la++; else ab++;
+  });
+  const strip = document.getElementById('stats-strip');
+  strip.innerHTML = `
+    <div class="stat-chip"><div class="stat-chip-dot" style="background:var(--green)"></div> ${p} Present</div>
+    <div class="stat-chip"><div class="stat-chip-dot" style="background:var(--amber)"></div> ${la} Late</div>
+    <div class="stat-chip"><div class="stat-chip-dot" style="background:var(--red)"></div> ${ab} Absent</div>
+    <div class="stat-chip"><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> ${sorted.length} Students</div>
+    ${c.columns.length>0?`<div class="stat-chip">📊 ${c.columns.length} Grade columns</div>`:''}`;
+
+  // Head
+  const head = document.getElementById('gb-head');
+  head.innerHTML = '';
+  const htr = document.createElement('tr');
+  const thS = document.createElement('th');
+  thS.className = 'th-student';
+  thS.innerHTML = `<div class="th-inner-flex">STUDENT</div>`;
+  htr.appendChild(thS);
+  const thA = document.createElement('th');
+  thA.innerHTML = `<div class="th-inner-flex">ATTENDANCE</div>`;
+  htr.appendChild(thA);
+  c.columns.forEach(col => {
+    const th = document.createElement('th');
+    th.innerHTML = `<div class="th-inner-flex">${esc(col.name)}
+      <div class="th-col-actions">
+        <button class="th-col-btn" onclick="renameColPrompt(${col.id})" title="Rename">✎</button>
+        <button class="th-col-btn" onclick="delColConfirm(${col.id})" title="Delete">×</button>
+      </div>
+    </div>`;
+    htr.appendChild(th);
+  });
+  head.appendChild(htr);
+
+  // Body
+  const body = document.getElementById('gb-body');
+  body.innerHTML = '';
+  sorted.forEach(student => {
+    const tr = document.createElement('tr');
+    // Student cell
+    const tdS = document.createElement('td');
+    tdS.className = 'td-student';
+    const init = student.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    tdS.innerHTML = `<div class="td-student-inner">
+      <div class="td-mini-av">${init}</div>
+      <span class="td-name-text">${esc(student.name)}</span>
+    </div>`;
+    tr.appendChild(tdS);
+    // Attendance cell
+    const tdA = document.createElement('td');
+    tdA.className = 'td-att-cell';
+    const attKey = `att_${student.id}`;
+    const attVal = (l.data||{})[attKey]||'present';
+    tdA.innerHTML = `<span class="att-chip ${attVal}" data-att="${student.id}" onclick="cycleAtt(${student.id})">${attLabel(attVal)}</span>`;
+    tr.appendChild(tdA);
+    // Grade cells
+    c.columns.forEach(col => {
+      const td = document.createElement('td');
+      const gKey = `grade_${student.id}_${col.id}`;
+      const inp = document.createElement('input');
+      inp.className = 'grade-inp'; inp.type = 'text';
+      inp.value = (l.data||{})[gKey]||''; inp.placeholder = '—';
+      inp.oninput = e => { l.data[gKey]=e.target.value; saveDB('lesson'); };
+      td.appendChild(inp); tr.appendChild(td);
+    });
+    body.appendChild(tr);
+  });
+
+  // Add student row
+  const atr = document.createElement('tr');
+  atr.className = 'add-student-row';
+  const atd = document.createElement('td');
+  atd.className = 'td-student';
+  atd.colSpan = 2 + c.columns.length;
+  const ainp = document.createElement('input');
+  ainp.className = 'add-row-inp'; ainp.placeholder = '+ Type name and press Enter to quickly add a student...';
+  ainp.onkeydown = e => {
+    if(e.key==='Enter' && ainp.value.trim()) {
+      const name=ainp.value.trim(); const c2=CC();
+      if(!c2.students.find(s=>s.name.toLowerCase()===name.toLowerCase())) {
+        c2.students.push({id:c2.nextSid++,name,phone:'',email:'',parentName:'',parentPhone:'',note:''});
+        saveDB('class'); renderGradebook(); toast('Student added!');
+      } else toast('Student already exists.');
+      ainp.value='';
+    }
+  };
+  atd.appendChild(ainp); atr.appendChild(atd); body.appendChild(atr);
+}
+
+const ATT = ['present','late','absent'];
+function cycleAtt(sid) {
+  const l=CL(); if(!l) return;
+  if(!l.data) l.data={};
+  const k=`att_${sid}`;
+  const cur=(l.data)[k]||'present';
+  const next=ATT[(ATT.indexOf(cur)+1)%ATT.length];
+  l.data[k]=next; saveDB('lesson');
+  const chip=document.querySelector(`[data-att="${sid}"]`);
+  if(chip){chip.className=`att-chip ${next}`;chip.textContent=attLabel(next);}
+  // update stats
+  const c=CC(),l2=CL();
+  let p=0,la=0,ab=0;
+  c.students.forEach(s=>{const v=(l2.data||{})[`att_${s.id}`]||'present';if(v==='present')p++;else if(v==='late')la++;else ab++;});
+  const chips=document.getElementById('stats-strip').querySelectorAll('.stat-chip');
+  if(chips[0])chips[0].innerHTML=`<div class="stat-chip-dot" style="background:var(--green)"></div> ${p} Present`;
+  if(chips[1])chips[1].innerHTML=`<div class="stat-chip-dot" style="background:var(--amber)"></div> ${la} Late`;
+  if(chips[2])chips[2].innerHTML=`<div class="stat-chip-dot" style="background:var(--red)"></div> ${ab} Absent`;
+}
+function attLabel(v){return{present:'✓ Present',late:'⏰ Late',absent:'✗ Absent'}[v]||v;}
+
+// Columns
+let renameColId=null;
+function openAddColumn(){ document.getElementById('inp-colname').value=''; openOv('ov-column'); }
+function saveColumn(){
+  const name=v('inp-colname'); if(!name){shake('inp-colname');return;}
+  const c=CC(); c.columns.push({id:c.nextCid++,name});
+  saveDB('class'); closeOv('ov-column'); renderGradebook(); toast('Column added!');
+}
+function renameColPrompt(cid){
+  renameColId=cid;
+  const col=CC().columns.find(c=>c.id===cid);
+  sv('inp-rename-col',col.name); openOv('ov-rename-col');
+}
+function confirmRenameCol(){
+  const name=v('inp-rename-col'); if(!name){shake('inp-rename-col');return;}
+  CC().columns.find(c=>c.id===renameColId).name=name;
+  saveDB('class'); closeOv('ov-rename-col'); renderGradebook();
+}
+function delColConfirm(cid){
+  const col=CC().columns.find(c=>c.id===cid);
+  confirm_(`Delete column "${col.name}"?`,'All grade data in this column will be lost.',()=>{
+    const c=CC(); c.columns=c.columns.filter(c=>c.id!==cid);
+    saveDB('class'); renderGradebook();
+  });
+}
+
+// ════════════════════════════════════
+//  ANALYTICS
+// ════════════════════════════════════
+function renderAnalytics(){
+  const c=CC(); const scroll=document.getElementById('analytics-scroll');
+  if(!c.students.length){
+    scroll.innerHTML=`<div class="empty-state"><div class="empty-icon">📊</div><div class="empty-title">No data yet</div><div class="empty-desc">Add students and create lessons to see analytics.</div></div>`;
+    return;
+  }
+  const sorted=[...c.students].sort((a,b)=>a.name.localeCompare(b.name));
+  const total=c.lessons.length;
+  let totalPresent=0,totalLate=0,totalAbsent=0;
+  sorted.forEach(s=>{const st=studentStats(s.id);totalPresent+=st.present;totalLate+=st.late;totalAbsent+=st.absent;});
+  const avgRate=total>0&&sorted.length>0?Math.round(totalPresent/(total*sorted.length)*100):100;
+
+  scroll.innerHTML=`
+    <div class="analytics-grid">
+      <div class="astat-card"><div class="astat-val">${sorted.length}</div><div class="astat-lbl">Students</div></div>
+      <div class="astat-card"><div class="astat-val">${total}</div><div class="astat-lbl">Lessons</div></div>
+      <div class="astat-card"><div class="astat-val" style="color:var(--green)">${avgRate}%</div><div class="astat-lbl">Avg Attendance</div></div>
+      <div class="astat-card"><div class="astat-val" style="color:var(--red)">${totalAbsent}</div><div class="astat-lbl">Total Absences</div></div>
+    </div>
+    <table class="att-table">
+      <thead><tr>
+        <th>Student</th><th>Present</th><th>Late</th><th>Absent</th><th>Rate</th>
+      </tr></thead>
+      <tbody>
+        ${sorted.map(s=>{
+          const st=studentStats(s.id);
+          const rate=total>0?Math.round(st.present/total*100):100;
+          const color=rate>=80?'var(--green)':rate>=60?'var(--amber)':'var(--red)';
+          return`<tr>
+            <td><strong>${esc(s.name)}</strong></td>
+            <td><span class="pill pill-green">✓ ${st.present}</span></td>
+            <td><span class="pill pill-amber">⏰ ${st.late}</span></td>
+            <td><span class="pill pill-red">✗ ${st.absent}</span></td>
+            <td>
+              <div class="rate-bar-wrap">
+                <div class="rate-bar"><div class="rate-bar-fill" style="width:${rate}%;background:${color}"></div></div>
+                <span style="font-size:12px;font-weight:700;color:${color}">${rate}%</span>
+              </div>
+            </td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>`;
+}
+
+// ════════════════════════════════════
+//  PDF EXPORT
+// ════════════════════════════════════
+function exportLessonPDF(){
+  const c=CC(), l=CL(); if(!l){toast('No lesson selected.');return;}
+  const sorted=[...c.students].sort((a,b)=>a.name.localeCompare(b.name));
+  const rows=sorted.map(s=>{
+    const att=(l.data||{})[`att_${s.id}`]||'present';
+    const aC={present:'#f0fdf4',late:'#fffbeb',absent:'#fef2f2'};
+    const aT={present:'#059669',late:'#d97706',absent:'#dc2626'};
+    const aL={present:'✓ Present',late:'⏰ Late',absent:'✗ Absent'};
+    const grades=c.columns.map(col=>`<td style="padding:10px 14px;text-align:center;font-size:13px">${esc((l.data||{})[`grade_${s.id}_${col.id}`]||'')}</td>`).join('');
+    return`<tr style="border-bottom:1px solid #f5f5f5">
+      <td style="padding:12px 14px;font-weight:600;font-size:13px">${esc(s.name)}</td>
+      <td style="padding:12px 14px;font-size:11px;color:#666">${esc(s.phone||'')}</td>
+      <td style="padding:12px 14px;font-size:11px;color:#666">${esc(s.parentPhone||'')}</td>
+      <td style="padding:10px 14px;text-align:center"><span style="background:${aC[att]};color:${aT[att]};padding:4px 10px;border-radius:100px;font-size:11px;font-weight:700">${aL[att]}</span></td>
+      ${grades}
+    </tr>`;
+  }).join('');
+  const colHeaders=c.columns.map(col=>`<th style="${thStyle}">${esc(col.name)}</th>`).join('');
+  const thStyle='padding:11px 14px;background:#111827;color:white;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;text-align:left';
+  downloadHTML(`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+    @import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700;800&display=swap');
+    *{box-sizing:border-box;margin:0;padding:0}body{font-family:'Geist',sans-serif;padding:40px;background:#fff;color:#111827}
+    @media print{body{padding:24px}}
+  </style></head><body>
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:6px">
+      <div style="width:44px;height:44px;background:#2563eb;border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-size:16px;font-weight:900">CB</div>
+      <div>
+        <div style="font-size:22px;font-weight:800;letter-spacing:-.5px">${esc(c.name)}</div>
+        <div style="font-size:12px;color:#6b7280;margin-top:2px">${esc(c.subject||'')}${c.teacher?' · '+esc(c.teacher):''}</div>
+      </div>
+    </div>
+    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px;margin:16px 0 24px;display:flex;align-items:center;gap:12px">
+      <div style="background:#2563eb;color:white;padding:4px 12px;border-radius:100px;font-size:12px;font-weight:700">${l.date}</div>
+      <div style="font-size:15px;font-weight:700">${esc(l.topic)}</div>
+      ${l.num?`<div style="font-size:12px;color:#6b7280">Lesson ${l.num}</div>`:''}
+    </div>
+    <table style="width:100%;border-collapse:collapse;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden">
+      <thead><tr>
+        <th style="${thStyle}">Student</th>
+        <th style="${thStyle}">Phone</th>
+        <th style="${thStyle}">Parent</th>
+        <th style="${thStyle};text-align:center">Attendance</th>
+        ${colHeaders}
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div style="margin-top:32px;font-size:11px;color:#d1d5db;text-align:center">Classbook · ${new Date().toLocaleString()}</div>
+  </body></html>`, `${c.name}_${l.date}.html`);
+  toast('Exported! Open in browser → Print → Save as PDF');
+}
+
+function exportClassPDF(){
+  const c=CC();
+  const sorted=[...c.students].sort((a,b)=>a.name.localeCompare(b.name));
+  const total=c.lessons.length;
+  const thS='padding:11px 14px;background:#111827;color:white;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;text-align:left';
+  const rows=sorted.map(s=>{
+    const st=studentStats(s.id);
+    const rate=total>0?Math.round(st.present/total*100):100;
+    const rC=rate>=80?'#059669':rate>=60?'#d97706':'#dc2626';
+    const hist=c.lessons.map(l=>{
+      const v=(l.data||{})[`att_${s.id}`]||'present';
+      const bg={present:'#f0fdf4',late:'#fffbeb',absent:'#fef2f2'};
+      const tc={present:'#059669',late:'#d97706',absent:'#dc2626'};
+      const lb={present:'P',late:'L',absent:'A'};
+      return`<span style="display:inline-flex;width:22px;height:22px;border-radius:4px;background:${bg[v]};color:${tc[v]};align-items:center;justify-content:center;font-size:10px;font-weight:700;margin:1px">${lb[v]}</span>`;
+    }).join('');
+    return`<tr style="border-bottom:1px solid #f5f5f5">
+      <td style="padding:12px 14px;font-weight:600;font-size:13px">${esc(s.name)}</td>
+      <td style="padding:12px 14px;font-size:11px;color:#666">${esc(s.phone||'')}</td>
+      <td style="padding:12px 14px;font-size:11px;color:#666">${esc(s.parentPhone||'')}</td>
+      <td style="padding:12px 14px;font-weight:700;color:#059669;text-align:center">${st.present}</td>
+      <td style="padding:12px 14px;font-weight:700;color:#d97706;text-align:center">${st.late}</td>
+      <td style="padding:12px 14px;font-weight:700;color:#dc2626;text-align:center">${st.absent}</td>
+      <td style="padding:12px 14px;font-weight:800;color:${rC};text-align:center">${rate}%</td>
+      <td style="padding:8px 14px">${hist}</td>
+    </tr>`;
+  }).join('');
+  downloadHTML(`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+    @import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700;800&display=swap');
+    *{box-sizing:border-box;margin:0;padding:0}body{font-family:'Geist',sans-serif;padding:40px;background:#fff;color:#111827}
+    @media print{body{padding:24px}}
+  </style></head><body>
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:6px">
+      <div style="width:44px;height:44px;background:#2563eb;border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-size:16px;font-weight:900">CB</div>
+      <div>
+        <div style="font-size:22px;font-weight:800;letter-spacing:-.5px">${esc(c.name)}</div>
+        <div style="font-size:12px;color:#6b7280;margin-top:2px">${esc(c.subject||'')}${c.teacher?' · '+esc(c.teacher):''} · ${total} lessons · ${sorted.length} students</div>
+      </div>
+    </div>
+    <hr style="border:none;border-top:2px solid #2563eb;margin:16px 0 24px">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#9ca3af;margin-bottom:12px">Attendance Overview</div>
+    <table style="width:100%;border-collapse:collapse;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;margin-bottom:40px">
+      <thead><tr>
+        <th style="${thS}">Student</th><th style="${thS}">Phone</th><th style="${thS}">Parent</th>
+        <th style="${thS};text-align:center">Present</th><th style="${thS};text-align:center">Late</th>
+        <th style="${thS};text-align:center">Absent</th><th style="${thS};text-align:center">Rate</th>
+        <th style="${thS}">History (P/L/A per lesson)</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div style="margin-top:24px;font-size:11px;color:#d1d5db;text-align:center">Classbook · Generated ${new Date().toLocaleString()}</div>
+  </body></html>`, `${c.name}_overview.html`);
+  toast('Exported! Open in browser → Print → Save as PDF');
+}
+
+function downloadHTML(html, filename){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([html],{type:'text/html'}));
+  a.download=filename; a.click();
+}
+
+// ════════════════════════════════════
+//  MODALS
+// ════════════════════════════════════
+function openOv(id){ document.getElementById(id).classList.add('open'); setTimeout(()=>{const i=document.querySelector(`#${id} .finput,.auth-input`);if(i)i.focus();},60); }
+function closeOv(id){ document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.ov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.ov.open').forEach(o=>o.classList.remove('open'));closeSheet();}});
+
+let _cb=null;
+function confirm_(title,desc,onOk){
+  document.getElementById('confirm-title').textContent=title;
+  document.getElementById('confirm-desc').textContent=desc;
+  _cb=onOk; openOv('ov-confirm');
+}
+function confirmOk(){ if(_cb)_cb(); closeOv('ov-confirm'); }
+
+// ════════════════════════════════════
+//  UTILS
+// ════════════════════════════════════
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function v(id){return document.getElementById(id).value.trim();}
+function sv(id,val){document.getElementById(id).value=val;}
+function clrInputs(ids){ids.forEach(id=>sv(id,''));}
+function todayStr(){return new Date().toISOString().split('T')[0];}
+function ifEnter(e,fn){if(e.key==='Enter')fn();}
+function shake(id){
+  const el=document.getElementById(id);
+  el.style.borderColor='var(--red)'; el.style.boxShadow='0 0 0 3px rgba(220,38,38,.12)';
+  setTimeout(()=>{el.style.borderColor='';el.style.boxShadow='';},800);
+}
+let _tt;
+function toast(msg){
+  const ex=document.querySelector('.toast');if(ex)ex.remove();
+  const el=document.createElement('div');el.className='toast';el.textContent=msg;
+  document.body.appendChild(el);
+  clearTimeout(_tt);_tt=setTimeout(()=>el.remove(),3200);
+}
+
+// ════════════════════════════════════
+//  INIT
+// ════════════════════════════════════
+loadDB();
+if(DB.user){
+  enterApp();
+} else {
+  showScreen('s-auth');
+}
+</script>
+</body>
+</html>
